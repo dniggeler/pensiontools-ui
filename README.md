@@ -1,4 +1,5 @@
-# vue.app.ui
+# Client App for PensionTools
+App is implemented in vuejs and vuetify components.
 
 ## Project setup
 ```
