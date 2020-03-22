@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-toolbar>
+    <v-app-bar app light>
+      <v-toolbar flat class="pl-0">
         <v-app-bar-nav-icon @click="drawer=!drawer" />
         <v-toolbar-title class="pa-4">Swiss Tax and Pension Tools</v-toolbar-title>
 
@@ -23,8 +23,13 @@
 
         <v-spacer />
 
-        <v-btn icon right href="https://github.com/dniggeler/PensionTools" target="_blank">
+        <v-btn icon right href="https://github.com/dniggeler/pensiontools-ui" target="_blank">
           <v-icon>mdi-github</v-icon>
+        </v-btn>
+
+        <v-btn icon right>
+          <v-icon v-if="isConnected">mdi-cloud-check</v-icon>
+          <v-icon v-else>mdi-cloud-alert</v-icon>
         </v-btn>
       </v-toolbar>
     </v-app-bar>
@@ -64,11 +69,14 @@
 </template>
 
 <script>
+import api from "@/services/HealthCheckService";
+
 export default {
   name: "App",
 
   data: () => ({
     drawer: false,
+    isConnected: false,
     multiple: true,
     links: [
       { key: "home", text: "Home", icon: "mdi-home", route: "/" },
@@ -77,8 +85,18 @@ export default {
         text: "Tools",
         icon: "mdi-hammer-screwdriver",
         sublinks: [
-          { key: "IncomeTax", text: "Income Tax", icon: "mdi-calculator", route:"tools" },
-          { key: "BenefitTax", text: "Benefit Tax", icon: "mdi-calculator", route:"/" }
+          {
+            key: "IncomeTax",
+            text: "Income Tax",
+            icon: "mdi-calculator",
+            route: "tools"
+          },
+          {
+            key: "BenefitTax",
+            text: "Benefit Tax",
+            icon: "mdi-calculator",
+            route: "/"
+          }
         ],
         route: "/tools"
       },
@@ -89,6 +107,20 @@ export default {
         route: "/municipalities"
       }
     ]
-  })
+  }),
+  async created() {
+    await this.setIsConnected();
+    this.timer = setInterval(this.setIsConnected, 30000);
+  },
+
+  methods: {
+    async setIsConnected() {
+      this.isConnected = await api.doHealthCheck();
+    }
+  },
+
+  beforeDestroy() {
+    clearInterval(this.timer);
+  }
 };
 </script>
