@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app light>
-      <v-toolbar flat class="pl-0">
+      <v-toolbar flat>
         <v-app-bar-nav-icon @click="drawer=!drawer" />
         <v-toolbar-title class="pa-4">Swiss Tax and Pension Tools</v-toolbar-title>
 
@@ -27,10 +27,15 @@
           <v-icon>mdi-github</v-icon>
         </v-btn>
 
-        <v-btn icon right>
-          <v-icon v-if="isConnected">mdi-cloud-check</v-icon>
-          <v-icon v-else>mdi-cloud-alert</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+          <v-btn icon right v-on="on">
+            <v-icon v-if="isConnected">mdi-cloud-check</v-icon>
+            <v-icon v-else>mdi-cloud-alert</v-icon>
+          </v-btn>
+          </template>
+          <span>Is tax service healthy?</span>
+        </v-tooltip>
       </v-toolbar>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" app>
