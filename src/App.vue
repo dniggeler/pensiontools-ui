@@ -27,15 +27,8 @@
           <v-icon>mdi-github</v-icon>
         </v-btn>
 
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-          <v-btn icon right v-on="on">
-            <v-icon v-if="isConnected">mdi-cloud-check</v-icon>
-            <v-icon v-else>mdi-cloud-alert</v-icon>
-          </v-btn>
-          </template>
-          <span>Is tax service healthy?</span>
-        </v-tooltip>
+        <HealthCheck></HealthCheck>
+        
       </v-toolbar>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" app>
@@ -74,14 +67,13 @@
 </template>
 
 <script>
-import api from "@/services/HealthCheckService";
+import HealthCheck from '@/components/HealthCheck'
 
 export default {
   name: "App",
 
   data: () => ({
     drawer: false,
-    isConnected: false,
     multiple: true,
     links: [
       { key: "home", text: "Home", icon: "mdi-home", route: "/" },
@@ -113,19 +105,6 @@ export default {
       }
     ]
   }),
-  async created() {
-    await this.setIsConnected();
-    this.timer = setInterval(this.setIsConnected, 30000);
-  },
-
-  methods: {
-    async setIsConnected() {
-      this.isConnected = await api.doHealthCheck();
-    }
-  },
-
-  beforeDestroy() {
-    clearInterval(this.timer);
-  }
+  components: { HealthCheck }
 };
 </script>
